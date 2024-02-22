@@ -1,6 +1,6 @@
-import Test from "@/routes/main/Test.jsx";
+import Info from "@/routes/main/Info.jsx";
 import {BrowserRouter, Outlet, Route, Routes} from "react-router-dom";
-import Test2 from "@/routes/main/Test2.jsx";
+import RouteManage from "@/routes/main/RouteManage.jsx";
 
 const Content = () => {
     return (

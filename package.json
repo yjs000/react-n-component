@@ -4,7 +4,7 @@
     "version": "0.0.0",
     "type": "module",
     "scripts": {
-        "local": "vite",
+        "local": "vite --port 8080",
         "dev": "vite --mode dev",
         "build": "vite --mode prod build",
         "preview": "vite preview"
@@ -15,7 +15,8 @@
         "axios": "^1.6.7",
         "dotenv": "^16.4.5",
         "react": "^18.2.0",
-        "react-dom": "^18.2.0"
+        "react-dom": "^18.2.0",
+        "react-router-dom": "^6.22.1"
     },
     "devDependencies": {
         "@types/react": "^18.0.24",

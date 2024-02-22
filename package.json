@@ -1,0 +1,26 @@
+{
+    "name": "route_management",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "scripts": {
+        "local": "vite",
+        "dev": "vite --mode dev",
+        "build": "vite --mode prod build",
+        "preview": "vite preview"
+    },
+    "dependencies": {
+        "@progress/kendo-licensing": "^1.3.5",
+        "@progress/kendo-react-grid": "^7.2.1",
+        "axios": "^1.6.7",
+        "dotenv": "^16.4.5",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.0.24",
+        "@types/react-dom": "^18.0.8",
+        "@vitejs/plugin-react": "^2.2.0",
+        "vite": "^3.2.3"
+    }
+}

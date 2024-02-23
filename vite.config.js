@@ -16,10 +16,10 @@ export default defineConfig((command, mode) => {
         },
         server: {
             proxy: {
-                '/api': {
+                '/route-management-api': {
                     target: env.VITE_API_URL,
                     changeOrigin: true, // 무슨뜻??
-                    rewrite: path => path.replace(/^\/api/, '')
+                    rewrite: path => path.replace(/^\/route-management-api/, '')
                 }
             },
             configure: (proxy, _options) => {

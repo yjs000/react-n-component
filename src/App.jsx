@@ -5,6 +5,7 @@ import RouteManage from "@/routes/main/RouteManage.jsx";
 import Login from "@/routes/Login.jsx";
 import Main from "@/routes/Main.jsx";
 import StationManage from "@/routes/main/StationManage.jsx";
+import '@progress/kendo-theme-default/dist/all.css';
 
 //App.js에서는 route 등 config관리
 function App() {

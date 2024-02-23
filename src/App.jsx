@@ -6,6 +6,7 @@ import Login from "@/routes/Login.jsx";
 import Main from "@/routes/Main.jsx";
 import StationManage from "@/routes/main/StationManage.jsx";
 import '@progress/kendo-theme-default/dist/all.css';
+import NotFound from "@/routes/NotFound.jsx";
 
 //App.js에서는 route 등 config관리
 function App() {
@@ -18,7 +19,9 @@ function App() {
                         <Route path={"info"} element={<Info/>}></Route>
                         <Route path={"route-mng"} element={<RouteManage/>}></Route>
                         <Route path={"station-mng"} element={<StationManage/>}></Route>
+                        <Route path={"*"} element={<NotFound/>}></Route>
                     </Route>
+                    <Route path={"*"} element={<NotFound/>}></Route>
                 </Routes>
             </BrowserRouter>
         </div>

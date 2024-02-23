@@ -1,9 +1,11 @@
 import {Field, FieldWrapper, Form, FormElement} from "@progress/kendo-react-form";
 import {Input} from "@progress/kendo-react-inputs";
-import { Error } from "@progress/kendo-react-labels";
 import axios from "@/api/axiso"
 import {JSEncrypt} from "jsencrypt";
+import useAuth from "@/hooks/useAuth.jsx";
+
 const Login = () => {
+    const {auth, setAuth} = useAuth();
     const handleSubmit = async (dataItem) => {
         // id: jisu
         // pw : !1234qwer
@@ -19,6 +21,14 @@ const Login = () => {
         const loginRes = await axios.post("/login", {id: dataItem.id, password: encryptPw})
         console.log("loginRes", loginRes);
         const data = loginRes.item;
+        if(loginRes?.data?.status == 200 || loginRes?.data?.status == 201 /*토큰 만료시 서버에서 재요청된 토큰*/) {
+            const _auth = loginRes.data.item.token;
+            setAuth(_auth);
+            sessionStorage.setItem('_auth', JSON.stringify(_auth));
+        } else {
+            console.log(loginRes);
+            alert("로그인 실패!");
+        }
     };
 
     return (

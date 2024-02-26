@@ -1,7 +1,11 @@
+import {Link} from "react-router-dom";
+import {deleteCookie} from "@/cmmn.js";
+
 const Footer = () => {
     return (
         <div>
-           footer
+           <span>footer</span>
+            <Link to={"/logout"}>Logout</Link>
         </div>
     );
 };

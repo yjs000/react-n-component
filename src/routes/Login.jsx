@@ -3,8 +3,11 @@ import {Input} from "@progress/kendo-react-inputs";
 import axios from "@/api/axiso"
 import {JSEncrypt} from "jsencrypt";
 import useAuth from "@/hooks/useAuth.jsx";
+import {setCookie} from "@/cmmn.js";
+import {Link, Navigate, useNavigate} from "react-router-dom";
 
 const Login = () => {
+    const navigate = useNavigate()
     const {auth, setAuth} = useAuth();
     const handleSubmit = async (dataItem) => {
         // id: jisu
@@ -24,7 +27,8 @@ const Login = () => {
         if(loginRes?.data?.status == 200 || loginRes?.data?.status == 201 /*토큰 만료시 서버에서 재요청된 토큰*/) {
             const _auth = loginRes.data.item.token;
             setAuth(_auth);
-            sessionStorage.setItem('_auth', JSON.stringify(_auth));
+            setCookie("token", _auth, {maxAge: loginRes.data.item.expireSec ?? 0});
+            return navigate("/main");
         } else {
             console.log(loginRes);
             alert("로그인 실패!");
@@ -32,6 +36,7 @@ const Login = () => {
     };
 
     return (
+        auth ? <h1>이미 로그인 되어있습니다. <Link to={"/"}>home</Link> </h1> :
         <div>
             <Form
                 onSubmit={handleSubmit}

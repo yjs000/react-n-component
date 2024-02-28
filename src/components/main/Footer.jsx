@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import {deleteCookie} from "@/cmmn.js";
+import {deleteCookie} from "@/js/cmmn.js";
 
 const Footer = () => {
     return (

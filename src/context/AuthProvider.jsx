@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import {getCookie} from "@/cmmn.js";
+import {getCookie} from "@/js/cmmn.js";
 
 const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {

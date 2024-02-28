@@ -3,8 +3,8 @@ import {Input} from "@progress/kendo-react-inputs";
 import axios from "@/api/axiso"
 import {JSEncrypt} from "jsencrypt";
 import useAuth from "@/hooks/useAuth.jsx";
-import {setCookie} from "@/cmmn.js";
-import {Link, Navigate, useNavigate} from "react-router-dom";
+import {setCookie} from "@/js/cmmn.js";
+import {Link, useNavigate} from "react-router-dom";
 
 const Login = () => {
     const navigate = useNavigate()
@@ -12,9 +12,7 @@ const Login = () => {
     const handleSubmit = async (dataItem) => {
         // id: jisu
         // pw : !1234qwer
-        console.log(dataItem);
         const res = await axios.post("/public-key");
-        console.log("publicKey", res)
         const encrypt = new JSEncrypt();
 
         //암호화
@@ -22,7 +20,6 @@ const Login = () => {
         const encryptPw = encrypt.encrypt(dataItem?.pw);
 
         const loginRes = await axios.post("/login", {id: dataItem.id, password: encryptPw})
-        console.log("loginRes", loginRes);
         const data = loginRes.item;
         if(loginRes?.data?.status == 200 || loginRes?.data?.status == 201 /*토큰 만료시 서버에서 재요청된 토큰*/) {
             const _auth = loginRes.data.item.token;
@@ -30,7 +27,6 @@ const Login = () => {
             setCookie("token", _auth, {maxAge: loginRes.data.item.expireSec ?? 0});
             return navigate("/main");
         } else {
-            console.log(loginRes);
             alert("로그인 실패!");
         }
     };

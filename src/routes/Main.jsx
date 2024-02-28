@@ -1,7 +1,7 @@
-import Menu from "@/components/Menu.jsx";
-import Header from "@/components/Header.jsx";
-import Content from "@/components/Content.jsx";
-import Footer from "@/components/Footer.jsx";
+import Menu from "@/components/main/Menu.jsx";
+import Header from "@/components/main/Header.jsx";
+import Content from "@/components/main/Content.jsx";
+import Footer from "@/components/main/Footer.jsx";
 
 /*Main화면*/
 const Main = () => {

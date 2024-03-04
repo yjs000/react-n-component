@@ -15,6 +15,7 @@ export default defineConfig((command, mode) => {
             }
         },
         server: {
+            host: true,
             proxy: {
                 '/route-management-api': {
                     target: env.VITE_API_URL,

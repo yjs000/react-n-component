@@ -1,16 +1,19 @@
 import {useEffect} from "react";
 
 const {kakao} = window;
-const KakaoMap = ({id}) => {
+const KakaoMap = ({id, setMap}) => {
     useEffect(() => {
-        const container = document.getElementById('map');
+        const container = document.getElementById(id);
         const options = {
-            center: new kakao.maps.LatLng(33.450701, 126.570667),
-            level: 3
+            center: new kakao.maps.LatLng(35.57905055, 129.317001),
+            level: 4
         };
 
         const map = new kakao.maps.Map(container, options);
+        setMap(map);
+
     }, []);
+
 
 
     return (

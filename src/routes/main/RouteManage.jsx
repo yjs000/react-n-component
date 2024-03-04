@@ -1,8 +1,5 @@
-
 const RouteManage = () => {
-    return (
-        <div>RouteManage</div>
-    );
+return <div>routeManage</div>
 };
 
 export default RouteManage;

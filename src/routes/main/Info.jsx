@@ -6,37 +6,30 @@ import {Suspense, useEffect, useState} from 'react';
 import useSearch from "@/hooks/useSearch";
 
 const processGridData = data => {
-    return data.map(d => ({...d, routeId : `id : ${d.routeId}`}))
+    const items = data?.items ?? [];
+    return items.map(d => ({...d, routeId : `id : ${d.routeId}`}))
 };
 
 const processExcelData = data => {
-    return data;
+    return data?.items ?? [];
 };
 
 const Info = () => {
-    const {data, error} = useSearch('route/combo/search', {
-        dbDiv: 'edit'
-    });
-
 
     //view를 그려줌.(view폴더를 따로빼도됨)
-
-
     return (
         <>
-
             <LogGrid
-                grid={{ pageable: true, sortable: true }}
+                grid={{ pageable: false, sortable: true }}
                 columns={[
                     { field: 'routeId', title: 'ID', width: '250px' },
                     { field: 'routeName', title: 'NAME', width: '250px' }
                 ]}
                 fieldsets={[
-                    { name: 'test', label: 'test', component: Input },
-                    { name: 'test', label: 'test', component: Input }
+                    { name: 'routeId', label: 'ID', component: Input },
+                    { name: 'routeName', label: 'NAME', component: Input }
                 ]}
-                gridData={processGridData(data)}
-                excelData={processExcelData(data)}
+                processGridData={processGridData}
             />
             {/*<div style={{width : "500px", height: "500px"}}>*/}
             {/*    <KakaoMap id={"map"}/>*/}

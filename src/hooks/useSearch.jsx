@@ -1,7 +1,9 @@
 import {useEffect, useState} from "react";
+import useAxiosPrivate from "@/hooks/useAxiosPrivate.jsx";
 
-export default function useAxiosPrivate(url, searchParam, config={}) {
-    const [data, setData] = useState([]);
+export default function useSearch(url, searchParam, config={}) {
+    const axios = useAxiosPrivate();
+    const [data, setData] = useState(null);
     const [error, setError] = useState(null);
 
     useEffect(() => {
@@ -23,6 +25,7 @@ export default function useAxiosPrivate(url, searchParam, config={}) {
         search();
     }, []);
 
+    console.log("setData", data)
 
     return {error, data}
 }

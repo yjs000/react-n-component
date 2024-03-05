@@ -7,19 +7,18 @@ const { AKM } = window;
 const akm = AKM();
 
 let newBusStopMarker = null;
-
 let clickPolyLine = null;
+let coordinateMarker = null;
 const Stationmanage = () => {
     const [busStops, setBusStops] = useState([]);
     const [routeVertexes, setRouteVertexes] = useState([]);
     const [map, setMap] = useState(null);
-    const [coordinateMarker, setCoordinateMarker] = useState(null);
     const [busStopLng, setBusStopLng] = useState(null);
     const [busStopLat, setBusStopLat] = useState(null);
     const [clickPolyLineId, setClickPolyLineId] = useState(null);
 
     const coordinateLng = coordinateMarker != null ? coordinateMarker.getPosition().getLng() : null;
-    const coordinateLat = coordinateMarker != null ? coordinateMarker.getPosition().getLng() : null;
+    const coordinateLat = coordinateMarker != null ? coordinateMarker.getPosition().getLat() : null;
     const setCoordinate = () => {
         axios.post("/bus-stop/coordinate-on-link/search", {
             "longitude": newBusStopMarker.getPosition().getLng(),
@@ -28,14 +27,18 @@ const Stationmanage = () => {
         }).then(res => {
             const data = res.data?.item;
             const newLatLng = new kakao.maps.LatLng(data?.latitude, data?.longitude);
+            console.log(coordinateMarker)
             if(coordinateMarker != null) {
                 coordinateMarker.setPosition(newLatLng);
+                coordinateMarker.setMap(map);
+                console.log("coordinate", coordinateMarker.getPosition().toString())
+                newBusStopMarker.setDraggable(true)
             } else {
                 const marker = new kakao.maps.Marker({
                     // 지도 중심좌표에 마커를 생성합니다
                     position: newLatLng
                 });
-                setCoordinateMarker(marker);
+                coordinateMarker = marker;
             }
 
         });
@@ -68,6 +71,8 @@ const Stationmanage = () => {
             kakao.maps.event.addListener(newBusStopMarker, 'dragend', function () {
                 console.log(newBusStopMarker, "dragend");
                 setCoordinate();
+                setBusStopLng(newBusStopMarker.getPosition().getLng());
+                setBusStopLat(newBusStopMarker.getPosition().getLat());
             });
 
             //클릭이벤트
@@ -79,28 +84,12 @@ const Stationmanage = () => {
                 setBusStopLng(latlng.getLng())
                 setBusStopLat(latlng.getLat());
 
-
-                var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-                message += '경도는 ' + latlng.getLng() + ' 입니다';
-                console.log(message)
-
-
                 kakao.maps.event.removeListener(map, 'click', mouseClickEvent);//한번만 click하고 클릭 뭇함
             }
 
             kakao.maps.event.addListener(map, 'click', mouseClickEvent);
         }
     }, [map]);
-
-
-
-    useEffect(() => {
-        if(coordinateMarker != null) {
-            coordinateMarker.setMap(map);
-            console.log("coordinate", coordinateMarker.getPosition().toString())
-            newBusStopMarker.setDraggable(true)
-        }
-    }, [coordinateMarker]);
 
 
     //정류장 마커찍기

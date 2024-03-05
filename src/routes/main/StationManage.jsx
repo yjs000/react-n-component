@@ -7,12 +7,19 @@ const { AKM } = window;
 const akm = AKM();
 
 let newBusStopMarker = null;
+
 let clickPolyLine = null;
 const Stationmanage = () => {
     const [busStops, setBusStops] = useState([]);
     const [routeVertexes, setRouteVertexes] = useState([]);
     const [map, setMap] = useState(null);
     const [coordinateMarker, setCoordinateMarker] = useState(null);
+    const [busStopLng, setBusStopLng] = useState(null);
+    const [busStopLat, setBusStopLat] = useState(null);
+    const [clickPolyLineId, setClickPolyLineId] = useState(null);
+
+    const coordinateLng = coordinateMarker != null ? coordinateMarker.getPosition().getLng() : null;
+    const coordinateLat = coordinateMarker != null ? coordinateMarker.getPosition().getLng() : null;
     const setCoordinate = () => {
         axios.post("/bus-stop/coordinate-on-link/search", {
             "longitude": newBusStopMarker.getPosition().getLng(),
@@ -69,9 +76,14 @@ const Stationmanage = () => {
                 newBusStopMarker.setPosition(latlng);
                 newBusStopMarker.setMap(map);
 
+                setBusStopLng(latlng.getLng())
+                setBusStopLat(latlng.getLat());
+
+
                 var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
                 message += '경도는 ' + latlng.getLng() + ' 입니다';
                 console.log(message)
+
 
                 kakao.maps.event.removeListener(map, 'click', mouseClickEvent);//한번만 click하고 클릭 뭇함
             }
@@ -117,9 +129,10 @@ const Stationmanage = () => {
             strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
             strokeStyle: 'solid', // 선의 스타일입니다
         });
-        clickPolyLine = polyline
-        clickPolyLine.id = link.linkId
+        polyline.id = link.linkId
         kakao.maps.event.addListener(polyline, 'click', function() {
+            clickPolyLine = polyline
+            setClickPolyLineId(clickPolyLine.id);
             setCoordinate();
         });
         polyline.setMap(map);
@@ -128,6 +141,9 @@ const Stationmanage = () => {
     return (
         <>
             <h1>수선의발 테스트</h1>
+            <div>클릭한 링크 아이디 : {clickPolyLineId}</div>
+            <div>클릭한 마커(정류장) 위치 : lon {busStopLng}  lat {busStopLat}</div>
+            <div>수선의발 : lon {coordinateLng}  lat {coordinateLat}</div>
             <div style={{ width: '700px', height: '700px' }}>
                 <KakaoMap id={'map'} setMap={setMap} />
             </div>

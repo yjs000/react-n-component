@@ -23,7 +23,7 @@ export default function useSearch(url, searchParam, config={}) {
         };
 
         search();
-    }, []);
+    }, searchParam);
 
     console.log("setData", data)
 

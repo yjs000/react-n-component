@@ -1,15 +1,47 @@
-import {Form, FormElement} from '@progress/kendo-react-form';
+import { Form, FormElement } from '@progress/kendo-react-form';
 import NField from '@/components/NField.jsx';
-import {Input} from '@progress/kendo-react-inputs';
-import {Button} from '@progress/kendo-react-buttons';
-import {Grid, GridColumn, GridToolbar} from '@progress/kendo-react-grid';
-import {useRef} from 'react';
-import {ExcelExport} from '@progress/kendo-react-excel-export';
+import { Input } from '@progress/kendo-react-inputs';
+import { Button } from '@progress/kendo-react-buttons';
+import { Grid, GridColumn, GridToolbar } from '@progress/kendo-react-grid';
+import { useRef, useState } from 'react';
+import { ExcelExport } from '@progress/kendo-react-excel-export';
 import useSearch from '@/hooks/useSearch.jsx';
+import { orderBy } from '@progress/kendo-data-query';
 
-const LogGrid = ({ processExcelData, processGridData, grid, columns, fieldsets , url, searchParam}) => {
+/**
+ * 페이징없음
+ */
+/**
+ *
+ * @param processExcelData excel의 data 정제하는 함수.
+ * @param processGridData grid의 data 정제하는 함수.
+ * @param grid <Grid/>의 props설정
+ * @param columns <GridColumns/>설정. <GridColumns/>의 props
+ *  - 추가된 prop
+ *    - sort : boolean
+ * @param fieldsets 조회조건 <NField/> 달아주는 설정. <Field/>의 props
+ * @param url gird 조회 url
+ * @param searchParam grid 조회 param
+ */
+const MasterGrid = ({
+    processExcelData,
+    processGridData,
+    grid,
+    columns,
+    fieldsets,
+    url,
+    searchParam
+}) => {
     const _export = useRef(null);
     const { data } = useSearch(url, searchParam);
+    const items = data?.items ?? [];
+    const initalSort = columns.reduce((acc, col) => {
+        if (col.sort) {
+            acc.push({ field: col.field, dir: col.sort });
+        }
+        return acc;
+    }, []);
+    const [sort, setSort] = useState(initalSort);
     const exportExcel = () => {
         _export.current.save();
     };
@@ -20,7 +52,11 @@ const LogGrid = ({ processExcelData, processGridData, grid, columns, fieldsets ,
     return (
         <div>
             <ExcelExport
-                data={ typeof processExcelData == 'function' ? processExcelData(data) : data}
+                data={
+                    typeof processExcelData == 'function'
+                        ? processExcelData(orderBy(items, sort))
+                        : orderBy(items, sort)
+                }
                 ref={_export}
             >
                 <GridToolbar>
@@ -54,10 +90,20 @@ const LogGrid = ({ processExcelData, processGridData, grid, columns, fieldsets ,
                     />
                 </GridToolbar>
                 <Grid
-                    data={typeof processGridData == 'function' ? processGridData(data) : data}
+                    data={
+                        typeof processGridData == 'function'
+                            ? processGridData(orderBy(items, sort))
+                            : orderBy(items, sort)
+                    }
                     style={{ height: '300px' }}
-                    pageable={true}
-                    sortable={true}
+                    pageable={false}
+                    sortable={{
+                        mode: 'multiple'
+                    }}
+                    sort={sort}
+                    onSortChange={e => {
+                        setSort(e.sort);
+                    }}
                     {...grid}
                 >
                     {columns.map((col, idx) => (
@@ -69,4 +115,4 @@ const LogGrid = ({ processExcelData, processGridData, grid, columns, fieldsets ,
     );
 };
 
-export default LogGrid;
+export default MasterGrid;

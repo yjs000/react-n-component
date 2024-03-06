@@ -1,13 +1,11 @@
 //route의 porps를 받으므로 routes폴더 안에 있어야 함.
-import LogGrid from '@/components/LogGrid.jsx';
-import { Input } from '@progress/kendo-react-inputs';
-import useAxiosPrivate from '@/hooks/useAxiosPrivate.jsx';
-import {Suspense, useEffect, useState} from 'react';
-import useSearch from "@/hooks/useSearch";
+import {Input} from '@progress/kendo-react-inputs';
+import MasterGrid from "@/components/MasterGrid.jsx";
 
 const processGridData = data => {
-    const items = data?.items ?? [];
-    return items.map(d => ({...d, routeId : `id : ${d.routeId}`}))
+    // const items = data?.items ?? [];
+    return data.map(d => ({...d, routeId : `id : ${d.routeId}`}))
+    // console.log("process", data)
 };
 
 const processExcelData = data => {
@@ -19,11 +17,14 @@ const Info = () => {
     //view를 그려줌.(view폴더를 따로빼도됨)
     return (
         <>
-            <LogGrid
-                grid={{ pageable: false, sortable: true }}
+            <MasterGrid
+                url={'route/combo/search'}
+                searchParam={{
+                    dbDiv: 'edit'
+                }}
                 columns={[
-                    { field: 'routeId', title: 'ID', width: '250px' },
-                    { field: 'routeName', title: 'NAME', width: '250px' }
+                    { field: 'routeId', title: 'ID', width: '250px', sort: "desc"},
+                    { field: 'routeName', title: 'NAME', width: '250px', sort: "desc"}
                 ]}
                 fieldsets={[
                     { name: 'routeId', label: 'ID', component: Input },

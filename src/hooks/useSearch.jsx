@@ -3,10 +3,11 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate.jsx";
 
 export default function useSearch(url, searchParam, config={}) {
     const axios = useAxiosPrivate();
-    const [data, setData] = useState(null);
+    const [data, setData] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        // axios.post(url)
         const search = async () => {
             try {
                 const res = await axios.post(url, searchParam, config);
@@ -23,9 +24,9 @@ export default function useSearch(url, searchParam, config={}) {
         };
 
         search();
-    }, searchParam);
+    }, []);
 
     console.log("setData", data)
 
-    return {error, data}
+    return {data, setData, error}
 }

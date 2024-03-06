@@ -27,8 +27,8 @@ const Info = () => {
                     { field: 'routeName', title: 'NAME', width: '250px', sort: "desc"}
                 ]}
                 fieldsets={[
-                    { name: 'routeId', label: 'ID', component: Input },
-                    { name: 'routeName', label: 'NAME', component: Input }
+                    { name: 'routeId', label: 'ID', component: Input, operator: "contains"},
+                    { name: 'routeName', label: 'NAME', component: Input , operator: "contains"}
                 ]}
                 processGridData={processGridData}
             />

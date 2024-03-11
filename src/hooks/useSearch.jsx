@@ -9,6 +9,7 @@ export default function useSearch(url, searchParam, config={}) {
     useEffect(() => {
         // axios.post(url)
         const search = async () => {
+            console.log("seasrching...")
             try {
                 const res = await axios.post(url, searchParam, config);
                 if (res.data.status == 200) {
@@ -25,8 +26,6 @@ export default function useSearch(url, searchParam, config={}) {
 
         search();
     }, []);
-
-    console.log("setData", data)
 
     return {data, setData, error}
 }

@@ -14,7 +14,7 @@ const LogGrid = ({ processExcelData, processGridData, grid, columns, fieldsets ,
         _export.current.save();
     };
     const handleSubmit = data => {
-        console.log(data);
+
     };
 
     return (

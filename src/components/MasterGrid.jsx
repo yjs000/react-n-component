@@ -3,10 +3,10 @@ import NField from '@/components/NField.jsx';
 import {Input} from '@progress/kendo-react-inputs';
 import {Button} from '@progress/kendo-react-buttons';
 import {Grid, GridColumn, GridToolbar} from '@progress/kendo-react-grid';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {ExcelExport} from '@progress/kendo-react-excel-export';
-import useSearch from '@/hooks/useSearch.jsx';
 import {filterBy, orderBy} from '@progress/kendo-data-query';
+import useAxiosPrivate from "@/hooks/useAxiosPrivate.jsx";
 
 /**
  * 페이징없음
@@ -23,7 +23,7 @@ import {filterBy, orderBy} from '@progress/kendo-data-query';
  *  - 추가된 prop
  *    - operator : [contains | eq | between]
  * @param url gird 조회 url
- * @param searchParam grid 조회 param
+ * @param param grid 조회 param
  */
 const MasterGrid = ({
     processExcelData,
@@ -31,15 +31,15 @@ const MasterGrid = ({
     grid,
     columns,
     fieldsets,
-    url,
-    searchParam
+    // url,
+    // param,
+    data,
 }) => {
+    console.log("grid Data", JSON.stringify(data)?.substring(0, 100))
     const _export = useRef(null);
     const exportExcel = () => {
         _export.current.save();
     };
-    const { data } = useSearch(url, searchParam);
-    const items = data?.items ?? [];
     const initalSort = columns.reduce((acc, col) => {
         if (col.sort) {
             acc.push({ field: col.field, dir: col.sort });
@@ -47,19 +47,51 @@ const MasterGrid = ({
         return acc;
     }, []);
     const initialFilter = {
-        logic: 'or',
+        logic: 'and',
         filters: fieldsets.reduce((acc, field) => {
             acc.push({ field: field.name, operator: field.operator, value: '' });
             return acc;
         }, [])
     };
     const [sort, setSort] = useState(initalSort);
-    const [filter, setFilter] = useState(initialFilter);
+    const [filter, setFilter] = useState({
+        "logic": "and",
+        "filters": [
+            {
+                "field": "db",
+                "operator": "eq",
+                "value": "edit"
+            },
+            {
+                "field": "routeId",
+                "operator": "contains",
+                "value": ""
+            },
+            {
+                "field": "routeName",
+                "operator": "contains",
+                "value": "지원"
+            }
+        ]
+    });
+    // const [rows, setRows] = useState([]);
+
+    console.log("filter", filter)
+    const rows = filterBy(data?.items ?? [], filter);
+
+    // useEffect(() => {
+    //     console.log("row bf", rows)
+    //     console.log("filter", filter);
+    //     const newRows = orderBy(filterBy(data?.items?? [], filter), sort);
+    //     console.log("row af", newRows)
+    //     setRows(newRows);
+    // }, [data, filter, sort]);
 
     const handleSubmit = data => {
+        console.log("handleSubmit")
         const newFilters = [...filter.filters];
         newFilters.forEach(obj => {
-            obj.value = data[obj.field];
+            obj.value = data[obj.field] ?? "";
         });
         setFilter({ ...filter, filters: newFilters });
     };
@@ -67,11 +99,7 @@ const MasterGrid = ({
     return (
         <div>
             <ExcelExport
-                data={
-                    typeof processExcelData == 'function'
-                        ? processExcelData(orderBy(filterBy(items, filter), sort))
-                        : orderBy(filterBy(items, filter), sort)
-                }
+                data={rows}
                 ref={_export}
             >
                 <GridToolbar>
@@ -85,7 +113,7 @@ const MasterGrid = ({
                             >
                                 <fieldset className={'k-form-fieldset'}>
                                     {fieldsets
-                                        ? fieldsets.map((f, idx) => <NField key={idx} {...f} />)
+                                        ? fieldsets.map((f, idx) => <NField key={idx} {...f}  />)
                                         : columns.map((col, idx) => (
                                               <NField
                                                   key={idx}
@@ -105,11 +133,7 @@ const MasterGrid = ({
                     />
                 </GridToolbar>
                 <Grid
-                    data={
-                        typeof processGridData == 'function'
-                            ? orderBy(filterBy(items, filter), sort)
-                            : orderBy(filterBy(items, filter), sort)
-                    }
+                    data={rows}
                     style={{ height: '300px' }}
                     pageable={false}
                     sortable={{

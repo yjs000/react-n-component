@@ -26,14 +26,11 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate.jsx";
  * @param param grid 조회 param
  */
 const MasterGrid = ({
-    processExcelData,
-    processGridData,
     grid,
     columns,
     fieldsets,
-    // url,
-    // param,
     data,
+    fieldInitialValues
 }) => {
     console.log("grid Data", JSON.stringify(data)?.substring(0, 100))
     const _export = useRef(null);
@@ -54,30 +51,10 @@ const MasterGrid = ({
         }, [])
     };
     const [sort, setSort] = useState(initalSort);
-    const [filter, setFilter] = useState({
-        "logic": "and",
-        "filters": [
-            {
-                "field": "db",
-                "operator": "eq",
-                "value": "edit"
-            },
-            {
-                "field": "routeId",
-                "operator": "contains",
-                "value": ""
-            },
-            {
-                "field": "routeName",
-                "operator": "contains",
-                "value": "지원"
-            }
-        ]
-    });
-    // const [rows, setRows] = useState([]);
+    const [filter, setFilter] = useState(initialFilter);
 
     console.log("filter", filter)
-    const rows = filterBy(data?.items ?? [], filter);
+    const rows = orderBy(filterBy(data?.items?? [], filter), sort);
 
     // useEffect(() => {
     //     console.log("row bf", rows)
@@ -88,7 +65,7 @@ const MasterGrid = ({
     // }, [data, filter, sort]);
 
     const handleSubmit = data => {
-        console.log("handleSubmit")
+        console.log("handleSubmit", data)
         const newFilters = [...filter.filters];
         newFilters.forEach(obj => {
             obj.value = data[obj.field] ?? "";
@@ -104,6 +81,7 @@ const MasterGrid = ({
             >
                 <GridToolbar>
                     <Form
+                        initialValues={fieldInitialValues}
                         onSubmit={handleSubmit}
                         render={formRenderProps => (
                             <FormElement

@@ -7,6 +7,7 @@ import NComboField from "@/components/NComboField.jsx";
 import {dbComboSearch} from "@/js/testData.js";
 import KakaoMap from "@/components/KakaoMap.jsx";
 import {useState} from "react";
+import {ComboBox} from "@progress/kendo-react-dropdowns";
 
 const onDetailBtnClick = (props) => {
 }
@@ -19,7 +20,12 @@ const param = {
 };
 
 //노선DB선택 Combo Field
-const DbCombo = (props) => <NComboField data={dbComboSearch.items} /*url={url} param={param}*/ id={"dbCombo"} dataItemKey={"id"} textField={"nm"} setSearcFieldValue={setSearchFieldValue} {...props}/>
+const DbCombo = (props) => {
+    console.log("dbcombo", props)
+    //data fetch
+    //props에서 setData를 받아서 data를 set해줌 => searchField에 데이터가 set.
+    return <ComboBox {...props}/>
+}
 
 const useComboData = (params) => {
     const [initialData, setInitialData] = useState({});
@@ -30,13 +36,13 @@ const useComboData = (params) => {
     return {initialData}
 }
 const Info = () => {
-    const {data} = useSearch(url, param);
-    const {initialValues} = useComboData([{name : "db", url : "", param : {}}, {name: "routeId", url : "", param : {}}])
     //모든 filtering데이터가 dataItems에 있어야 함.
+    const {data} = useSearch(url, param);
     const dataItems = {...data, items: data?.items?.map(item => {
             item.db = "edit"
             return item;
         })};
+    // const {initialValues} = useComboData([{name : "db", url : "", param : {}}, {name: "routeId", url : "", param : {}}])
 
     //view를 그려줌.(view폴더를 따로빼도됨)
     return (
@@ -45,7 +51,7 @@ const Info = () => {
                 url={url}
                 param={param}
                 data={dataItems}
-                fieldInitialValues={initialValues}
+                // fieldInitialValues={initialValues}
                 columns={[
                     { field: 'routeId', title: 'ID', width: '250px', sort: "desc"},
                     { field: 'routeName', title: '노선명', width: '250px', sort: "desc"},

@@ -1,12 +1,10 @@
-import {Form, FormElement} from '@progress/kendo-react-form';
-import NField from '@/components/NField.jsx';
-import {Input} from '@progress/kendo-react-inputs';
-import {Button} from '@progress/kendo-react-buttons';
-import {Grid, GridColumn, GridToolbar} from '@progress/kendo-react-grid';
-import {useEffect, useRef, useState} from 'react';
-import {ExcelExport} from '@progress/kendo-react-excel-export';
-import {filterBy, orderBy} from '@progress/kendo-data-query';
-import useAxiosPrivate from "@/hooks/useAxiosPrivate.jsx";
+import { Input } from '@progress/kendo-react-inputs';
+import { Button } from '@progress/kendo-react-buttons';
+import { Grid, GridColumn, GridToolbar } from '@progress/kendo-react-grid';
+import { useRef, useState } from 'react';
+import { ExcelExport } from '@progress/kendo-react-excel-export';
+import { filterBy, orderBy } from '@progress/kendo-data-query';
+import SearchField from '@/components/SearchField.jsx';
 
 /**
  * 페이징없음
@@ -25,14 +23,8 @@ import useAxiosPrivate from "@/hooks/useAxiosPrivate.jsx";
  * @param url gird 조회 url
  * @param param grid 조회 param
  */
-const MasterGrid = ({
-    grid,
-    columns,
-    fieldsets,
-    data,
-    fieldInitialValues
-}) => {
-    console.log("grid Data", JSON.stringify(data)?.substring(0, 100))
+const MasterGrid = ({ grid, columns, fieldsets, data, fieldInitialValues }) => {
+    console.log('grid Data', JSON.stringify(data)?.substring(0, 100));
     const _export = useRef(null);
     const exportExcel = () => {
         _export.current.save();
@@ -53,8 +45,8 @@ const MasterGrid = ({
     const [sort, setSort] = useState(initalSort);
     const [filter, setFilter] = useState(initialFilter);
 
-    console.log("filter", filter)
-    const rows = orderBy(filterBy(data?.items?? [], filter), sort);
+    console.log('filter', filter);
+    const rows = orderBy(filterBy(data?.items ?? [], filter), sort);
 
     // useEffect(() => {
     //     console.log("row bf", rows)
@@ -65,50 +57,33 @@ const MasterGrid = ({
     // }, [data, filter, sort]);
 
     const handleSubmit = data => {
-        console.log("handleSubmit", data)
+        console.log('handleSubmit', data);
         const newFilters = [...filter.filters];
         newFilters.forEach(obj => {
-            obj.value = data[obj.field] ?? "";
+            obj.value = data[obj.field] ?? '';
         });
         setFilter({ ...filter, filters: newFilters });
     };
 
     return (
         <div>
-            <ExcelExport
-                data={rows}
-                ref={_export}
-            >
+            <ExcelExport data={rows} ref={_export}>
                 <GridToolbar>
-                    <Form
-                        initialValues={fieldInitialValues}
-                        onSubmit={handleSubmit}
-                        render={formRenderProps => (
-                            <FormElement
-                                style={{
-                                    maxWidth: 650
-                                }}
-                            >
-                                <fieldset className={'k-form-fieldset'}>
-                                    {fieldsets
-                                        ? fieldsets.map((f, idx) => <NField key={idx} {...f}  />)
-                                        : columns.map((col, idx) => (
-                                              <NField
-                                                  key={idx}
-                                                  name={col.field}
-                                                  label={col.title}
-                                                  component={Input}
-                                              />
-                                          ))}
-                                </fieldset>
+                    <SearchField >
+                        {fieldsets
+                            ? fieldsets.map((f, idx) => {
+                                  const Component = f.component;
+                                  return <Component key={idx} {...f} />;
+                              })
+                            : columns.map((col, idx) => (
+                                  <Input key={idx} name={col.field} label={col.title} />
+                              ))}
 
-                                <div className="k-form-buttons">
-                                    <Button type="submit">조회</Button>
-                                    <Button onClick={exportExcel}>Export to Excel</Button>
-                                </div>
-                            </FormElement>
-                        )}
-                    />
+                        <div className="k-form-buttons">
+                            <Button type="submit">조회</Button>
+                            <Button onClick={exportExcel}>Export to Excel</Button>
+                        </div>
+                    </SearchField>
                 </GridToolbar>
                 <Grid
                     data={rows}
